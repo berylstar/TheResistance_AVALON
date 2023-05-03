@@ -9,6 +9,7 @@ public class IdentityScript : MonoBehaviour
     public GameObject panelIdentity;
     public Text textNickname, textExtra;
     public Button buttonIdentity, buttonNext;
+    public GameObject panelExpedition;
 
     private bool isClick = false;
     private bool isChecked = false;
@@ -46,7 +47,13 @@ public class IdentityScript : MonoBehaviour
         idx += 1;
 
         if (idx == GC.total)
+        {
             panelIdentity.SetActive(false);
+            panelExpedition.SetActive(true);
+        }
+
+        isChecked = false;
+            
     }
 
     public void ExtraInfo(string iden)
