@@ -24,6 +24,7 @@ public class GameController : MonoBehaviour
 
     [Header ("Game System")]
     public string[] players = { "", "", "", "", "", "", "", "", "", "" };
+    public string[] nicknames = { "", "", "", "", "", "", "", "", "", "" };
 
     private void IdentityShuffle()
     {

@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class SettingScript : MonoBehaviour
 {
     public GameController GC;
-    public GameObject panelSetting;
     public Button buttonPlus, buttonMinus, buttonV;
 
     [Header ("Text")]
@@ -51,7 +50,6 @@ public class SettingScript : MonoBehaviour
 
     public void ButtonGameStart()
     {
-        panelSetting.SetActive(false);
         GC.GetIdentity(pers, vers);
     }
 
