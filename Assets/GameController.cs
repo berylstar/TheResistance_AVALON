@@ -25,6 +25,11 @@ public class GameController : MonoBehaviour
     [Header ("Game System")]
     public string[] players = { "", "", "", "", "", "", "", "", "", "" };
     public string[] nicknames = { "", "", "", "", "", "", "", "", "", "" };
+    public int[] needs = { 0, 0, 0, 0, 0 };
+
+    public int iCaptin = 0;
+    public int iRound = 0;
+    public int iBreakdown = 0;
 
     private void IdentityShuffle()
     {
@@ -138,5 +143,42 @@ public class GameController : MonoBehaviour
         }
 
         IdentityShuffle();
+        ExpeditionNeed();
+    }
+
+    public void ExpeditionNeed()
+    {
+        if (total == 5)
+        {
+            needs[0] = 2;
+            needs[1] = 3;
+            needs[2] = 2;
+            needs[3] = 3;
+            needs[4] = 3;
+        }
+        else if (total == 6)
+        {
+            needs[0] = 2;
+            needs[1] = 3;
+            needs[2] = 4;
+            needs[3] = 3;
+            needs[4] = 4;
+        }
+        else if (total == 7)
+        {
+            needs[0] = 2;
+            needs[1] = 3;
+            needs[2] = 3;
+            needs[3] = 4;
+            needs[4] = 4;
+        }
+        else if (total == 8 || total == 9 || total == 10)
+        {
+            needs[0] = 3;
+            needs[1] = 4;
+            needs[2] = 4;
+            needs[3] = 5;
+            needs[4] = 5;
+        }
     }
 }

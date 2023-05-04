@@ -7,32 +7,121 @@ public class ExpeditionScript : MonoBehaviour
 {
     public GameController GC;
     public Image[] circles;
+    public GameObject[] rounds;
     public Text[] textNeeds;
-    public Text textCount, textVoteCount, textCaptin;
-    public Button buttonVote;
+    public Text textBreakdown, textCaptin, textTwoFail;
+    public Button buttonBreakdown, buttonVote;
 
-    private int iExp = 0;
+    private Color colorFail = new Color32(255, 0, 0, 100);
+    private Color colorSuccess = new Color32(0, 0, 255, 100);
+    private Color colorBreakdown = new Color32(210, 196, 142, 255);
 
     [Header("Scroll View")]
     public GameObject[] ps;
     public Text[] textNicknames;
     public Toggle[] toggles;
 
-    private void Awake()
+    private void Awake()    // 처음에 한 번
     {
         for (int i = 0; i < GC.total; i++)
         {
             textNicknames[i].text = GC.nicknames[i];
             ps[i].SetActive(true);
         }
+
+        for (int i = 0; i < 5; i++)
+        {
+            textNeeds[i].text = GC.needs[i].ToString();
+        }
+
+        rounds[0].SetActive(true);
+
+        if (GC.total >= 7)
+            textTwoFail.gameObject.SetActive(true);
+
+        GC.iCaptin = Random.Range(0, GC.total);
+        textCaptin.text = "원정대장: " + GC.nicknames[GC.iCaptin];
     }
 
-    public void ButtonVote()
+    private void Update()
     {
+        buttonVote.interactable = CheckExpeditionNeed();
+    }
+
+    public bool CheckExpeditionNeed()
+    {
+        int k = 0;
+
         for (int i = 0; i < GC.total; i++)
         {
             if (toggles[i].isOn)
-                print(i);
+                k += 1;
         }
+
+        if (GC.needs[GC.iRound] == k)
+            return true;
+        else
+            return false;
+    }
+
+    public void BreakdownPlus()
+    {
+        GC.iBreakdown += 1;
+        textBreakdown.text = GC.iBreakdown.ToString();
+
+        if (GC.iBreakdown == 4)
+        {
+            buttonBreakdown.image.color = colorFail;
+        }
+
+        ChangeCaptin();
+    }
+
+    public void BreakDownReset()
+    {
+        GC.iBreakdown = 0;
+        textBreakdown.text = 0.ToString();
+        buttonBreakdown.image.color = colorBreakdown;
+    }
+
+    public void NextExpedition(int iFail)
+    {
+        for (int i = 0; i < GC.total; i++)
+        {
+            toggles[i].isOn = false;
+        }
+
+        textNeeds[GC.iRound].text = (GC.needs[GC.iRound] - iFail) + "/" + iFail;
+        circles[GC.iRound].color = CheckFail(iFail) ? colorSuccess : colorFail;
+        rounds[GC.iRound].SetActive(false);
+        ChangeCaptin();
+        BreakDownReset();
+
+        GC.iRound += 1;
+
+        rounds[GC.iRound].SetActive(true);
+    }
+
+    private bool CheckFail(int iFail)
+    {
+        if (iFail > 0)
+        {
+            if (GC.iRound == 3 && GC.total >= 7)
+                return (iFail == 1);
+            else
+                return false;
+        }
+
+        return true;
+    }
+
+    public void ChangeCaptin()
+    {
+        GC.iCaptin += 1;
+
+        if (GC.iCaptin == GC.total)
+            GC.iCaptin = 0;
+
+        textCaptin.text = "원정대장: " + GC.nicknames[GC.iCaptin];
     }
 }
