@@ -121,7 +121,7 @@ public class IdentityScript : MonoBehaviour
             strr = "<악의 진영>\n";
             for (int i = 0; i < GC.total; i++)
             {
-                if (GC.players[i] == "하수인" || GC.players[i] == "모르가나" || GC.players[i] == "모드레드")
+                if (GC.players[i] == "하수인" || GC.players[i] == "모르가나" || GC.players[i] == "모드레드" || GC.players[i] == "오베론")
                 {
                     strr += "\"???\"\n";
                 }

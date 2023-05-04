@@ -1,14 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-// 10 : 기사
-// 11 : 멀린
-// 12 : 퍼시벌
-// 20 : 하수인
-// 21 : 모르가나
-// 22 : 오베론
-// 23 : 모드레드
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class GameController : MonoBehaviour
 {
@@ -30,6 +24,14 @@ public class GameController : MonoBehaviour
     public int iCaptin = 0;
     public int iRound = 0;
     public int iBreakdown = 0;
+    public int failCount = 0;
+
+    [Header ("Game Over")]
+    public Button[] buttons;
+    public GameObject textFind, textGoodWin, scrollview;
+    public Text textEvilWin;
+    public GameObject panelExpedition, panelGoodWin, panelEvilWin;
+    
 
     private void IdentityShuffle()
     {
@@ -146,6 +148,14 @@ public class GameController : MonoBehaviour
         ExpeditionNeed();
     }
 
+    public bool IsEvil(int i)
+    {
+        if (players[i] == "하수인" || players[i] == "모르가나" || players[i] == "오베론" || players[i] == "모드레드")
+            return true;
+        else
+            return false;
+    }
+
     public void ExpeditionNeed()
     {
         if (total == 5)
@@ -180,5 +190,73 @@ public class GameController : MonoBehaviour
             needs[3] = 5;
             needs[4] = 5;
         }
+    }
+
+    public bool CheckGameOver()
+    {
+        if (failCount >= 3)
+        {
+            EvilWin();
+            return true;
+        }
+        else if ((iRound==2 && failCount == 0) || (iRound == 3 && failCount == 1) || iRound == 4)
+        {
+            Goodwin();
+            return true;
+        }
+
+        return false;
+    }
+
+    public void EvilWin()
+    {
+        panelExpedition.SetActive(false);
+        panelGoodWin.SetActive(false);
+        panelEvilWin.SetActive(true);
+
+        string strr = "";
+
+        for (int i = 0; i < total; i++)
+        {
+            if (IsEvil(i))
+                strr += "\"" + nicknames[i] + "\"\n";
+        }
+
+        textEvilWin.text = strr;
+    }
+
+    public void Goodwin()
+    {
+        panelExpedition.SetActive(false);
+        panelEvilWin.SetActive(false);
+        panelGoodWin.SetActive(true);
+
+        for (int i = 0; i < total; i++)
+        {
+            buttons[i].GetComponentInChildren<Text>().text = nicknames[i];
+
+            buttons[i].gameObject.SetActive(true);
+            if (IsEvil(i))
+                buttons[i].interactable = false;
+        }
+    }
+
+    public void FindMerlin()
+    {
+        int pick = int.Parse(EventSystem.current.currentSelectedGameObject.name);
+
+        if (players[pick] == "멀린")
+            EvilWin();
+        else
+        {
+            textFind.SetActive(false);
+            scrollview.SetActive(false);
+            textGoodWin.SetActive(true);
+        }
+    }
+
+    public void ButtonRestart()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
     }
 }

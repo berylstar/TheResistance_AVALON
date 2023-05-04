@@ -73,6 +73,11 @@ public class ExpeditionScript : MonoBehaviour
         {
             buttonBreakdown.image.color = colorFail;
         }
+        else if (GC.iBreakdown > 4)
+        {
+            // 악의 진영 승리
+            GC.EvilWin();
+        }
 
         ChangeCaptin();
     }
@@ -86,23 +91,33 @@ public class ExpeditionScript : MonoBehaviour
 
     public void NextExpedition(int iFail)
     {
-        for (int i = 0; i < GC.total; i++)
+        if (!CheckSuccess(iFail))
+            GC.failCount += 1;
+
+        if (GC.CheckGameOver())
         {
-            toggles[i].isOn = false;
+            // 게임 오버 처리
         }
+        else
+        {
+            for (int i = 0; i < GC.total; i++)
+            {
+                toggles[i].isOn = false;
+            }
 
-        textNeeds[GC.iRound].text = (GC.needs[GC.iRound] - iFail) + "/" + iFail;
-        circles[GC.iRound].color = CheckFail(iFail) ? colorSuccess : colorFail;
-        rounds[GC.iRound].SetActive(false);
-        ChangeCaptin();
-        BreakDownReset();
+            textNeeds[GC.iRound].text = (GC.needs[GC.iRound] - iFail) + "/" + iFail;
+            circles[GC.iRound].color = CheckSuccess(iFail) ? colorSuccess : colorFail;
+            rounds[GC.iRound].SetActive(false);
+            ChangeCaptin();
+            BreakDownReset();
 
-        GC.iRound += 1;
+            GC.iRound += 1;
 
-        rounds[GC.iRound].SetActive(true);
+            rounds[GC.iRound].SetActive(true);
+        }
     }
 
-    private bool CheckFail(int iFail)
+    private bool CheckSuccess(int iFail)
     {
         if (iFail > 0)
         {
